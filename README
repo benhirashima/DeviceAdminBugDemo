@@ -4,7 +4,7 @@ The bug is documented here: http://code.google.com/p/android/issues/detail?id=53
 
 The bug makes it impossible to deactivate the app as a device administrator, therefore making the app impossible to uninstall. It appears when the device admin app does some device admin operations during boot, before the BOOT_COMPLETED broadcast has been received. We can cause this to happen by listening for the android.intent.action.MEDIA_MOUNTED broadcast or the android.net.wifi.STATE_CHANGE, which is sent before android.intent.action.BOOT_COMPLETED, and doing some device admin operations.
 
-WARNING: If you reproduce this bug, you will not be able to uninstall the app. A factory reset is required to remove it. If your device is rooted, it MAY be possible to uninstall the app with Titanium Backup by "freezing" the app, then uninstalling it. Do not count on this though. It has not be thoroughly tested.
+WARNING: If you reproduce this bug, you will not be able to uninstall the app. A factory reset is required to remove it. If your device is rooted, it MAY be possible to uninstall the app with Titanium Backup by "freezing" the app, then uninstalling it. Do not count on this though. It has not been thoroughly tested. You can also try an app called Disable Center Free. This app can disable then uninstall the device admin app. Same disclaimer as TB applies.
 
 To reproduce the bug, follow these steps on an emulator. 
 
@@ -14,4 +14,4 @@ To reproduce the bug, follow these steps on an emulator.
 4) Reboot the emulator again. You will see that logcat shows multiple component names registered as device admins for this app. This indicates that the bug has been reproduced.
 5) Try to deactivate the app as device administrator. It will be impossible.
 
-To reproduce the bug on a device, follow the same steps, but make sure the device is connected to wifi first. On an actual device, the system may not send android.intent.action.MEDIA_MOUNTED on boot, so another way to activate the app is to listen for android.net.wifi.STATE_CHANGE, which is sent before android.intent.action.BOOT_COMPLETED. 
+This bug has been reproduced on a Galaxy Nexus running stock Android 4.3. To reproduce the bug on a device, follow the same steps, but make sure the device is connected to wifi first. On an actual device, the system may not send android.intent.action.MEDIA_MOUNTED on boot, so another way to activate the app is to listen for android.net.wifi.STATE_CHANGE, which is sent before android.intent.action.BOOT_COMPLETED. 
