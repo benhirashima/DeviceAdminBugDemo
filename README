@@ -2,7 +2,7 @@ This project demonstrates a bug in Android that prevents device administrator ap
 
 The bug is documented here: http://code.google.com/p/android/issues/detail?id=53130
 
-The bug makes it impossible to deactivate the app as a device administrator, therefore making the app impossible to uninstall. It appears when the device admin app does some device admin operations during boot, before the BOOT_COMPLETED broadcast has been received. We can cause this to happen by listening for the android.intent.action.MEDIA_MOUNTED broadcast or the android.net.wifi.STATE_CHANGE, which is sent before android.intent.action.BOOT_COMPLETED, and doing some device admin operation.s.
+The bug makes it impossible to deactivate the app as a device administrator, therefore making the app impossible to uninstall. It appears when the device admin app does some device admin operations during boot, before the BOOT_COMPLETED broadcast has been received. We can cause this to happen by listening for the android.intent.action.MEDIA_MOUNTED broadcast or the android.net.wifi.STATE_CHANGE, which is sent before android.intent.action.BOOT_COMPLETED, and doing some device admin operations.
 
 There is a workaround for the bug, which is to check the system uptime since boot, and don't do any device admin operations until a certain amount of time has passed. You have to make a rough guess as to how much time it takes for the system to boot, but it's better than nothing. By default, this demo app has the workaround enabled. To disable it and reproduce the bug, set the WORK_AROUND_BUG constant to false in Receiver.java.
 
