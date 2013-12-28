@@ -1,23 +1,23 @@
 package com.benhirashima.deviceadminbugdemo;
 
+import java.util.Calendar;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 import android.util.Log;
 
 public class Receiver extends BroadcastReceiver
 {
 	public static final String TAG = "DeviceAdminBugDemo";
 	
-	// set this to false to reproduce the bug. set it to true to work around the bug by delaying 
-	// device admin operations until a certain amount of time has passed since boot started.
+	// set this to false to reproduce the bug. set it to true to work around the bug by  
+	// checking whether boot has completed before starting device admin operations.
 	private static final boolean WORK_AROUND_BUG = true;
-	
-	// adjust this to give the system enough time to finish booting before you issue device admin commands.
-	private static final int MIN_UPTIME = 180000;
 	
 	@Override
 	public void onReceive(Context context, Intent intent)
@@ -25,8 +25,6 @@ public class Receiver extends BroadcastReceiver
 		String action = intent.getAction();
 		Log.i(TAG, action + " received");
 		
-		long uptime = SystemClock.uptimeMillis();
-		Log.d(TAG, "Uptime since boot in milliseconds: " + uptime);
 		
 		DevicePolicyManager devicePolicyManager = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
 		ComponentName adminReceiver = new ComponentName(context, AdminReceiver.class);
@@ -39,18 +37,19 @@ public class Receiver extends BroadcastReceiver
 			
 		if (Intent.ACTION_BOOT_COMPLETED.equals(action))
 		{
+			setBootCompleteAlarm(context);
+			
 			Log.d(TAG, "Active device administrators:");
 			for (ComponentName compName : devicePolicyManager.getActiveAdmins())
 			{
 				Log.d(TAG, compName.toString());
 			}
 		}
-		else
+		else // catches all other broadcasts
 		{
 			if (WORK_AROUND_BUG) 
 			{
-				// wait until boot has completed. rough guess on time to wait.
-				if (uptime > MIN_UPTIME) doSomeDeviceAdminOperations(devicePolicyManager, adminReceiver);
+				if (isBootCompleteAlarmSet(context)) doSomeDeviceAdminOperations(devicePolicyManager, adminReceiver);
 			}
 			else
 			{
@@ -68,5 +67,31 @@ public class Receiver extends BroadcastReceiver
 		devicePolicyManager.setMaximumTimeToLock(adminReceiver, maxTimeToLock);
 		
 		Log.i(TAG, "Max time to lock set to " + maxTimeToLock);
+	}
+	
+	// set a dummy alarm that gets cleared on boot.
+	private void setBootCompleteAlarm(Context context)
+	{
+		final Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, 1000); // will never fire, sorta
+		
+		final AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		am.set(AlarmManager.ELAPSED_REALTIME, cal.getTimeInMillis(), createDummyPendingIntent(context));
+	}
+	
+	// a hacky way of telling whether boot has completed. the alarm gets cleared on boot.
+	private boolean isBootCompleteAlarmSet(Context context)
+	{
+		return PendingIntent.getBroadcast(context, 0, createDummyIntent(context), PendingIntent.FLAG_NO_CREATE) != null;
+	}
+	
+	private Intent createDummyIntent(Context context)
+	{
+		return new Intent(context, Receiver.class);
+	}
+	
+	private PendingIntent createDummyPendingIntent(Context context)
+	{
+		return PendingIntent.getBroadcast(context, 0, createDummyIntent(context), PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 }

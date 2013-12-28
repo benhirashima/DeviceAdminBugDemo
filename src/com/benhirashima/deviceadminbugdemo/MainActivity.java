@@ -1,5 +1,7 @@
 package com.benhirashima.deviceadminbugdemo;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -55,16 +57,21 @@ public class MainActivity extends Activity
 		if (devicePolicyManager.isAdminActive(adminReceiver))
 		{
 			int count = 0;
-			for (ComponentName compName : devicePolicyManager.getActiveAdmins())
+			
+			List<ComponentName> compNames = devicePolicyManager.getActiveAdmins();
+			if (compNames != null)
 			{
-				if (compName.equals(adminReceiver))
+				for (ComponentName compName : compNames)
 				{
-					devicePolicyManager.removeActiveAdmin(compName);
-					count++;
+					if (compName.equals(adminReceiver))
+					{
+						devicePolicyManager.removeActiveAdmin(compName);
+						count++;
+					}
 				}
 			}
-			Toast.makeText(getApplicationContext(), count + " device admin components deactivated", Toast.LENGTH_LONG).show();
 			
+			Toast.makeText(getApplicationContext(), count + " device admin components deactivated", Toast.LENGTH_LONG).show();
 			button.setText("Activate Device Admin");
 		}
 		else
