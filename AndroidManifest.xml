@@ -29,7 +29,6 @@
         <receiver android:name=".Receiver" >
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
-                <action android:name="android.intent.action.MEDIA_UNMOUNTED" />
                 <data android:scheme="file" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

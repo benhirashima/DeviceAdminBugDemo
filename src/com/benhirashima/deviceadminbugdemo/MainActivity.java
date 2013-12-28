@@ -72,8 +72,6 @@ public class MainActivity extends Activity
 			Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
 			intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminReceiver);
 			startActivityForResult(intent, ACTIVITY_RESULT_DEVICE_ADMIN);
-			
-			button.setText("Deactivate Device Admin");
 		}
 	}
 	
@@ -87,6 +85,7 @@ public class MainActivity extends Activity
 			case ACTIVITY_RESULT_DEVICE_ADMIN:
 				if (resultCode == Activity.RESULT_OK)
 				{
+					button.setText("Deactivate Device Admin");
 					Toast.makeText(getApplicationContext(), "Device admin activated", Toast.LENGTH_LONG).show();
 				}
 		}
