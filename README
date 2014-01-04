@@ -8,12 +8,12 @@ There is a workaround for the bug, which is to check whether boot has completed 
 
 WARNING: If you reproduce this bug, you will not be able to uninstall the app the usual way. There are two ways to uninstall an app that has triggered this bug. One requires root, and one doesnÕt.
 
-Root method: Using either Titanium Backup (premium version) or another root uninstaller app, disable/freeze SkipLock, then uninstall it. These apps run the following two commands as root, which you can also run yourself:
+Root method: Using either Titanium Backup (premium version) or another root uninstaller app, disable/freeze the app, then uninstall it. These apps run the following two commands as root, which you can also run yourself:
 
 # pm disable com.mypackage
 # pm uninstall com.mypackage
 
-Non-root method: Boot your device into safe mode by holding the power button until the power-off menu appears, then press and hold on "Power off". You will see a pop-up that allows you to reboot to safe mode. Once in safe mode, go to Settings > Security > Device administrators,  uncheck SkipLock, and deactivate it as a device administrator. If the checkbox isn't unchecked after you deactivate it, try rebooting into safe mode again and deactivating it again. You may have to do this quite a few times. Just keep deactivating and rebooting to safe mode and it will eventually stay unchecked (or disappear from the list). After you have deactivated SkipLock as a device administrator, you can uninstall it as usual, via Settings > Apps > SkipLock.
+Non-root method: Boot your device into safe mode by holding the power button until the power-off menu appears, then press and hold on "Power off". You will see a pop-up that allows you to reboot to safe mode. Once in safe mode, go to Settings > Security > Device administrators,  uncheck the app, and deactivate it as a device administrator. If the checkbox isn't unchecked after you deactivate it, try rebooting into safe mode again and deactivating it again. You may have to do this quite a few times. Just keep deactivating and rebooting to safe mode and it will eventually stay unchecked (or disappear from the list). After you have deactivated the app as a device administrator, you can uninstall it the usual way.
 
 To reproduce the bug, follow these steps on an emulator. 
 
